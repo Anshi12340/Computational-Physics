@@ -58,10 +58,22 @@ def gauss(A,B):
                 L1.append(A[k][s]-o)
              A[k]=L1 
  #printing last column of A            
- Lw=[]
+ """Lw=[]
  for k in range(len(A)):
     Lw.append(A[k][-1])
- return Lw              
+ print(Lw)   
+ return Lw    """          
+ Lw_=[]
+ Lw=[]
+ for d in range(len(A),len(A[0])):
+  
+  for k in range(len(A)):
+    Lw_.append(A[k][d])
+  
+  Lw.append(Lw_)
+  Lw_=[]  
+ 
+ return Lw  
 
 #inverse of matrix using Gauss Jordon
 def inverse(A):
@@ -75,8 +87,7 @@ def inverse(A):
             L_.append(0)
     L.append(L_)
     L_=[]
- Lsol=gauss(A,L)
-    
+ Lsol=gauss(A,L) 
 
 
  Lk=[]
@@ -162,7 +173,7 @@ def ch(matrix):
      L_.append(L)
 
  for i in range(len(L_)):
-     for j in range(len(L_)):        
+     for j in range(i,len(L_)):        
          if i==j:
              f=0
              for g in range(0,i):
@@ -175,11 +186,8 @@ def ch(matrix):
              for k in range(0,i):
                  t=L_[i][k]*L_[k][j] +c
                  c=t
-             L_[i][j]=(matrix[i][j] - c )/ L_[i][i]     
-
-   
-
-
+             L_[i][j]=(matrix[i][j] - c )/ L_[i][i]   
+             L_[j][i] = L_[i][j]
  Lt_=[]
  for k in range(len(matrix)):
      Lt=[]
@@ -207,40 +215,29 @@ def Jac(A,B):
         if j!=i:
             t=A[i][j]*L[j] +c
             c=t
-    x=(B[i][0]-c)    /A[i][i]  
+    x=(B[i][0]-c)/A[i][i]  
     L_.append(x)
     c=0
   return L_
   
- for l in range(20):
-   L__.append(list(L))
-   L=L__[l]
-
-
-
-
- for v in range(len(L__)):
-     if v==len(L__)-1:
-        break
-     j=0
-     for p in range(len(A)):
-        h=(L__[v+1][p]-L__[v][p])**2 +j
-        j=h
-        
-         
-     if math.sqrt(j)<10**-6:
-        break  
- return L__[v]   
+ while True:
+   Li=L.copy()
+   L=list(L)
+   sum=0
+   for k in range(len(L)):
+     sum=sum+((L[k]-Li[k])**2)
+   if math.sqrt(sum)<10**-6:
+     break  
+    
+ return L 
+ 
         
 
 def Seidel(A,B):
+ import math
  L=[]
  for k in range(len(A)):
   L.append(0)
-
-
-
-
  def matrix(L):
   w=0
   s=0
@@ -267,50 +264,179 @@ def Seidel(A,B):
   
   return L    
 
- L__=[]
- for l in range(40):
-   L__.append(matrix(L))
-   L=L__[l]
-
-
-
-
- for v in range(len(L__)):
-     if v==len(L__)-1:
-        break
-     j=0
-     for p in range(len(A)):
-        h=(L__[v+1][p]-L__[v][p])**2 +j
-        j=h
-        
-         
-     if math.sqrt(j)<10**-6:
-        break  
- return L__[v]   
-  
-
-
-
-
-
-
+ while True:
+   Li=L.copy()
+   L=matrix(L)
+   sum=0
+   for k in range(len(L)):
+     sum=sum+((L[k]-Li[k])**2)
+   if math.sqrt(sum)<10**-6:
+     break  
     
+ return L
 
-            
+def bracket(a,b,f,k): #k is initial guess
+ c=0
+ if f(a)*f(b)>0:
+    print("already bracketed")   
+ while f(a)*f(b)>0:
+  if np.abs(f(a))<np.abs(f(b)):
+     a=a-k*(b-a)
+     c=c+1
+  elif np.abs(f(a))>np.abs(f(b)):
+     b=b+k*(b-a)
+     c=c+1
+ return f(a),f(b),c 
 
+def Falsi(a,b,f):
+  def check(a,b):
+    if np.abs(b-a)<10**-6 and f(a)<10**-6 and f(b)<10**-6 :
+        return 1
+    else:
+        return 0
+
+  c=b-(((b-a)*f(b))/(f(b)-f(a)))
+  
+  count=0
+  g=check(a,b)
+  while g==0:
+   if f(a)*f(c)<0:
+        b=c
+        c=b-(((b-a)*f(b))/(f(b)-f(a)))
+        count=count+1
+        g=check(a,b)
+   elif f(b)*f(c)<0:
+          a=c
+          c=b-(((b-a)*f(b))/(f(b)-f(a)))
+          count=count+1
+          g=check(a,b)
+  return c,count
  
 
-
+def Bisection(a,b,f):
+   def check(a,b):
+     n=b-a
+     if np.abs(n)<10**-6 and np.abs(f(a))<10**-6 and np.abs(f(b))<10**-6:
+       return 1
+     else:
+       return 0
+   count=0
+   s1=check(a,b)
+   while s1==0:
+      c=(a+b)*0.5
+      if f(a)*f(c)<0:
+         b=c
+         count=count+1
+         s1=check(a,b)  
+      elif f(b)*f(c)<0:
+         a=c
+         count=count+1
+         s1=check(a,b)
+   return c,count             
   
-       
+def Raphson(f,f_,x_): #f and f_ are function and derivative of function
+  c=0
+  for k in range(100):
+    x=x_ - f(x_)/f_(x_)
+    if np.abs(x-x_)<10**-6 and f(x)<10**-6:
+        break
+    else:
+        x_=x
+        c=c+1
+  return x,f(x),c      
 
+#Multivariable        
+def MultiNewton(f,f_,L,x,y,z):
+  def Multi_in(f,f_,L,x,y,z):
+     E=f(x,y,z)
+     E_=f_(x,y,z)
+     iv=inverse(E_)
+     for k in range(len(E)):
+      s=0
+      for l in range(len(E)):
+       s=s+(iv[k][l]*E[l])
+      L[k]=L[k]-s 
+     return L
+  X_=Multi_in(f,f_,L,x,y,z) 
+  Xi=L.copy()
+  X_=Multi_in(f,f_,L,x,y,z)   
+  c=0 
+  while math.sqrt((X_[0]-Xi[0])**2 + (X_[1]-Xi[1])**2 + (X_[2]-Xi[2])**2 )>10**-6:
+    x,y,z=X_[0],X_[1],X_[2]
+    Xi=X_.copy()
+    X_=Multi_in(f,f_,X_,x,y,z)
+    c=c+1
+  return(Xi,c)
 
+def Multi_Fixed(values,x,y,z):
+ xi,yi,zi=values(x,y,z)
+ c=0
+ while math.sqrt((xi-x)**2 + (yi-y)**2 + (zi-z)**2 )>10**-6:
+  x,y,z=xi,yi,zi
+  xi,yi,zi=values(x,y,z)
+  c=c+1
+ return xi,yi,zi,c
 
-
-
-
-
-
-
+def Laguerre(L,x):
+ epsilon=10**-6
+ def co(L,x):
+    sum=0
+    for k in range(len(L)):
+      sum=sum+L[k]*x**(-k-1+len(L)) 
     
-
+    return sum
+ def der(L,x):
+   s_=0
+   for v in range(len(L)):
+      if (len(L)-v-2)>=0:                               #-1x2+4x -4
+       s_=s_+ L[v]*(len(L)-1-v)*x**(len(L)-v-2)         #-2x+4
+  
+   return s_
+ def dder(L,x):
+   s__=0
+   for w in range(len(L)):
+    if (len(L)-w-3)>=0:
+     s__= s__+ L[w]*(len(L)-w-1)*(-w+len(L)-2)*x** (len(L)-w-3) #x**3+x**2+x +1
+  
+   return s__ 
+ def deflation(L,x):  
+   if co(L,x) !=0:
+     g=der(L,x)/co(L,x)
+     h=g**2 - (dder(L,x)/co(L,x))
+     n=len(L)-1                                                              
+     a1=  n/(g+(np.sqrt((n-1)*(n*h-(g**2)))))                        
+     a2= n/(g-(np.sqrt((n-1)*(n*h-(g**2))))) 
+     if np.abs(a1)<np.abs(a2):
+       a=a1
+     else:
+       a=a2
+   else:
+      root=x
+      return root
+   xnew=x-a 
+   while np.abs(xnew-x)>epsilon:
+     x=xnew
+    
+     xnew=deflation(L,x)
+   root=x
+   
+   return root
+  
+ def synthetic_division(L,value): 
+  Lnew=[]
+  Lnew.append(L[0])
+  for l in range(len(L)):
+   if l+1<len(L):
+    Lnew.append(value*Lnew[l]+L[l+1])
+  
+  return Lnew
+ roots=[]
+ for t in range(len(L)-1):
+  
+  value=deflation(L,x)
+  L_=synthetic_division(L,value)
+  roots.append(value)
+  L=L_[0:len(L)-1]
+  x=value
+ return roots
+  
