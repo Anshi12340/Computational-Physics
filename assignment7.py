@@ -23,16 +23,18 @@ print("numbers of iterations",c)
 x,count=Library.Bisection(-1.5,1.5,f)
 print("root is",x)
 print("iterations",count)
-#root is 0.3604220151901245
-#iterations 23
+#root is 0.36042165756225586
+#iterations 20
+ 
 
 #Falsi Method
 
 v,vcount=Library.Falsi(-1.5,1.5,f)
 print("root is",v)
 print("iterations",vcount)
-
-#Result is both Newton Method is taking 4 iterations whereas Bisection and Falsi method are taking 23 and 23 iterations
+#root is 0.36042180364913606
+#iterations 10
+#Result is both Newton Method is taking 4 iterations whereas Bisection and Falsi method are taking 20 and 10 iterations
 
 #Question 2
 #fixed point method
@@ -51,6 +53,17 @@ for k in range(100000):
     n=n+1
 print("root is =",x)
 print("number of steps to converge=",n)  
+"""def f(x):
+   y=((x**2)-3)/2
+   return y
+def fixed(x):
+ count=0
+ while True:
+   if np.abs(x-f(x))<10**-6:
+     return x,count
+   else:
+     x=f(x)
+     count=count+1"""
 
 #root is = -0.9955242875343852
 #number of steps to converge= 100000

@@ -74,9 +74,11 @@ def gauss(A,B):
   Lw_=[]  
  
  return Lw  
-
+    
+                    
 #inverse of matrix using Gauss Jordon
 def inverse(A):
+ 
  L=[]
  L_=[]
  for g in range(len(A)):
@@ -88,6 +90,8 @@ def inverse(A):
     L.append(L_)
     L_=[]
  Lsol=gauss(A,L) 
+ 
+
 
 
  Lk=[]
@@ -275,9 +279,9 @@ def Seidel(A,B):
     
  return L
 
-def bracket(a,b,f,k): #k is initial guess
+def bracket(a,b,f,k): #k is initial guess #c for counting
  c=0
- if f(a)*f(b)>0:
+ if f(a)*f(b)<0:
     print("already bracketed")   
  while f(a)*f(b)>0:
   if np.abs(f(a))<np.abs(f(b)):
@@ -286,64 +290,55 @@ def bracket(a,b,f,k): #k is initial guess
   elif np.abs(f(a))>np.abs(f(b)):
      b=b+k*(b-a)
      c=c+1
- return f(a),f(b),c 
+ return a,b,c 
 
 def Falsi(a,b,f):
-  def check(a,b):
-    if np.abs(b-a)<10**-6 and f(a)<10**-6 and f(b)<10**-6 :
-        return 1
+  if f(a)*f(b)<0:
+   count=0
+   while True:
+    c=b-(((b-a)*f(b))/(f(b)-f(a)))
+    if np.abs(b-a)<10**-6 or np.abs(f(c))<10**-6:
+      return c,count
     else:
-        return 0
+     if f(a)*f(c)<0:
+          b=c
+          count=count+1  
+     else:
+           a=c
+           count=count+1
+  else:
+     print("bracketing not done")
 
-  c=b-(((b-a)*f(b))/(f(b)-f(a)))
-  
-  count=0
-  g=check(a,b)
-  while g==0:
-   if f(a)*f(c)<0:
-        b=c
-        c=b-(((b-a)*f(b))/(f(b)-f(a)))
-        count=count+1
-        g=check(a,b)
-   elif f(b)*f(c)<0:
-          a=c
-          c=b-(((b-a)*f(b))/(f(b)-f(a)))
-          count=count+1
-          g=check(a,b)
-  return c,count
  
 
 def Bisection(a,b,f):
-   def check(a,b):
-     n=b-a
-     if np.abs(n)<10**-6 and np.abs(f(a))<10**-6 and np.abs(f(b))<10**-6:
-       return 1
+  count=0
+  if f(a)*f(b)<0:
+   while True:
+     c=(a+b)/2
+     if np.abs(b-a)<10**-6 or np.abs(f(c))<10**-6:
+        return c,count
      else:
-       return 0
-   count=0
-   s1=check(a,b)
-   while s1==0:
-      c=(a+b)*0.5
-      if f(a)*f(c)<0:
-         b=c
-         count=count+1
-         s1=check(a,b)  
-      elif f(b)*f(c)<0:
-         a=c
-         count=count+1
-         s1=check(a,b)
-   return c,count             
+    
+        if f(a)*f(c)<0:
+           b=c
+           count=count+1
+        else:
+           a=c
+           count=count+1  
+  else:
+     print("bracketing not done")          
   
-def Raphson(f,f_,x_): #f and f_ are function and derivative of function
+def Raphson(f,f_,x_): #f and f_ are function and derivative of function and x_ is initial guess
   c=0
-  for k in range(100):
+  while True:
     x=x_ - f(x_)/f_(x_)
     if np.abs(x-x_)<10**-6 and f(x)<10**-6:
-        break
+       return x,f(x),c  
     else:
         x_=x
         c=c+1
-  return x,f(x),c      
+       
 
 #Multivariable        
 def MultiNewton(f,f_,L,x,y,z):
@@ -368,7 +363,7 @@ def MultiNewton(f,f_,L,x,y,z):
     c=c+1
   return(Xi,c)
 
-def Multi_Fixed(values,x,y,z):
+def Multi_Fixed(values,x,y,z):#values is name of a function and requires 4 input values
  xi,yi,zi=values(x,y,z)
  c=0
  while math.sqrt((xi-x)**2 + (yi-y)**2 + (zi-z)**2 )>10**-6:
@@ -377,7 +372,7 @@ def Multi_Fixed(values,x,y,z):
   c=c+1
  return xi,yi,zi,c
 
-def Laguerre(L,x):
+def Laguerre(L,x): #entries ofL must be in decreasing powers of x
  epsilon=10**-6
  def co(L,x):
     sum=0
