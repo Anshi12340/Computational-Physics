@@ -40,7 +40,7 @@ def gauss(A,B):
  A[0]=A[c]
  A[c]=q
 
- print(A)
+ 
  #Normalising the pivot row  
  for e in range(len(A)):    
   
@@ -435,3 +435,27 @@ def Laguerre(L,x): #entries ofL must be in decreasing powers of x
   x=value
  return roots
   
+def Midpoint(a,b,N,h,f):
+ sum=0
+ x=a
+ for k in range(N):
+    x=x+(k*h)
+    if x<=b:
+     mid=((x)+(x+h))/2
+     
+     sum=sum+(f(mid))
+     
+    x=a
+ return sum *h   
+
+
+def Trapezoid(a,b,N,h,f):
+  sum=0
+  x=a
+  for k in range(N):
+    x=x+(k*h)
+    if x<=b:
+     sum=sum+((f(x)+f(x+h)))
+     x=a+h
+    x=a 
+  return sum *(h/2)  
