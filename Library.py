@@ -23,11 +23,53 @@ def lcg2(a,c,m,x_0,n):
 
 def gauss(A,B):
 #augmenting the matrix1
- for r in range(len(B[0])):
-  for k in range(len(A)):
-    A[k].append(B[k][r])
+    for r in range(len(B[0])):
+        for k in range(len(A)):
+          A[k].append(B[k][r])
 
- #swapping
+    
+    #swapping
+    for k in range(len(A)):
+
+        L=[]
+        p=A[k][k]
+        for l in range(len(A)):
+            if l>k:
+             if abs(A[l][k]) >abs(p):
+                p=A[l][k]
+        if p!=A[k][k]:
+            A[l],A[k]=A[k],A[l]
+            
+            
+        #normalising the pivot row  
+        if abs(A[k][k])<10**-6:
+           print("determinant is zero")    
+           break
+        fact=fact*A[k][k]
+        for t in range(len(A)):
+        
+           L.append(A[k][t]/A[k][k])  
+        A[k]=L
+        #multiply
+        for h in range(len(A)):
+           L=[]
+           if k!=h:
+             if A[h][k]!=0:
+               
+               for g in range(len(A)):
+                 L.append(A[h][g]- ( A[k][g]*A[h][k] ))
+               A[h]=L
+    Lw_=[]
+    Lw=[]
+    for d in range(len(A),len(A[0])):
+       for k in range(len(A)):
+        Lw_.append(A[k][d])
+       Lw.append(Lw_)
+       Lw_=[]  
+    return Lw          
+      
+
+"""#swapping
  c=0
  g=A
  p=g[0][0]
@@ -58,51 +100,73 @@ def gauss(A,B):
                 L1.append(A[k][s]-o)
              A[k]=L1 
  #printing last column of A            
- """Lw=[]
+ Lw=[]
  for k in range(len(A)):
     Lw.append(A[k][-1])
  print(Lw)   
  return Lw    """          
- Lw_=[]
- Lw=[]
- for d in range(len(A),len(A[0])):
-  
-  for k in range(len(A)):
-    Lw_.append(A[k][d])
-  
-  Lw.append(Lw_)
-  Lw_=[]  
- 
- return Lw  
-    
+
+#finding determinant of matrix
+def det(A):
+    fact=1
+    #swapping
+    for k in range(len(A)):
+
+        L=[]
+        p=A[k][k]
+        for l in range(len(A)):
+            if l>k:
+             if abs(A[l][k]) >abs(p):
+                p=A[l][k]
+        if p!=A[k][k]:
+            A[l],A[k]=A[k],A[l]
+            fact=fact*(-1)
+            
+        #normalising the pivot row  
+        if abs(A[k][k])<10**-6:
+           return 0  
+           
+        fact=fact*A[k][k]
+        for t in range(len(A)):
+        
+           L.append(A[k][t]/A[k][k])  
+        A[k]=L
+        #multiply
+        for h in range(len(A)):
+           L=[]
+           if k!=h:
+             if A[h][k]!=0:
+               
+               for g in range(len(A)):
+                 L.append(A[h][g]- ( A[k][g]*A[h][k] ))
+               A[h]=L
+    return fact     
                     
 #inverse of matrix using Gauss Jordon
 def inverse(A):
- 
- L=[]
- L_=[]
- for g in range(len(A)):
-    for c in range(len(A)):
+  if det(A)==0:
+    print("inverse does not exist")
+  else:
+     L=[]
+     L_=[]
+     for g in range(len(A)):
+      for c in range(len(A)):
         if g==c:
             L_.append(1)
         else:
             L_.append(0)
-    L.append(L_)
-    L_=[]
- Lsol=gauss(A,L) 
+      L.append(L_)
+      L_=[]
+     Lsol=gauss(A,L) 
  
-
-
-
- Lk=[]
- Lk_=[]   
- for j in range(len(Lsol)):
-    for p in range(len(Lsol)):
+     Lk=[]
+     Lk_=[]   
+     for j in range(len(Lsol)):
+      for p in range(len(Lsol)):
        Lk_.append(Lsol[p][j])
-    Lk.append(Lk_)
-    Lk_=[]
-
- return Lk    
+      Lk.append(Lk_)
+      Lk_=[]
+     return Lk    
 
 
 #final matrix is L_ and U_
@@ -297,13 +361,13 @@ def Falsi(a,b,f):
    count=0
    while True:
     c=b-(((b-a)*f(b))/(f(b)-f(a)))
-    if np.abs(b-a)<10**-6 or np.abs(f(c))<10**-6:
+    if np.abs(b-a)<10**-6 and np.abs(f(c))<10**-6:
       return c,count
     else:
      if f(a)*f(c)<0:
           b=c
           count=count+1  
-     else:
+     if f(b)*f(c)<0:
            a=c
            count=count+1
   else:
@@ -435,6 +499,9 @@ def Laguerre(L,x): #entries ofL must be in decreasing powers of x
   x=value
  return roots
   
+
+#Integration methods
+  
 def Midpoint(a,b,N,h,f):
  sum=0
  x=a
@@ -459,3 +526,37 @@ def Trapezoid(a,b,N,h,f):
      x=a+h
     x=a 
   return sum *(h/2)  
+
+def Simpson(a,b,N,h,f):
+    sum=0
+    x=a
+    for k in range(0,N):
+        if x<=b:
+            if k==0 or k==N-1:
+                sum=sum+f(x)
+                x=x+h
+            elif k %2==0:
+
+             sum=sum  +2*f(x)
+             x=x+h
+            else:
+                sum=sum+4*f(x)
+                x=x+h
+
+    return (sum*h)/3  
+
+#Monte_Carlo integration
+def Monte(a,b,N,fnew):  #returns both function and value of standard deviation
+    q_=[]
+    sum1=0
+    sum2=0
+    q=lcg2(1103515245,12345,32768,0.1,N)
+    for i in q:
+        q_.append(a+((b-a)*i))
+
+    for d in q_:
+      sum1=sum1+fnew(d)
+      sum2=sum2+ ((fnew(d)) **2)
+    F=((b-a)/N) *sum1
+    """sigma=np.sqrt((((sum2/N)- ((sum1/N)**2))) )"""
+    return F
