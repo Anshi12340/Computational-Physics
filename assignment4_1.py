@@ -7,8 +7,8 @@ import numpy as np
 matrix=Library.read_matrix("Cholesky.txt")
 matrixs=Library.read_matrix("Cholesky_.txt")
 
-A=Library.ch(matrix)
-At =A
+A,At=Library.ch(matrix)
+"""At =A"""
 print(A,At)
 X=Library.LU(matrix,matrixs,At,A)
 print("Solutions by Cholesky method",X)
@@ -18,4 +18,4 @@ print("Solutions by Cholesky method",X)
 Xs=Library.Jac(matrix,matrixs)
 print("By Jacobi method",Xs)
 
-#Outpu is [0.0, 0.9987793010095429, 0.9993896422356856, 0.9993896422356856]
+#Output is  [2.980232238769531e-07, 1.0, 0.9999997019767761, 1.0000002980232239]

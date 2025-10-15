@@ -4,29 +4,32 @@
 import Library
 
 matrix=Library.read_matrix("LU1.txt")
-
-#making L and U
+S=Library.LU_decomposition(matrix)
+L=[]
+U=[]
 L_=[]
 U_=[]
-for k in range(len(matrix)):
-     L=[]
-     U=[]
-     for p in range(len(matrix)):
-          if k==p:
-               L.append(1)
-               U.append(0)
-          if k<p or k>p:
-               U.append(0)
-               L.append(0)        
-     L_.append(L)
-     U_.append(U)
-       
+for k in range(len(S)):
+      for g in range(len(S)):
+            if k>g:
+             L.append(S[k][g])
+             U.append(0)
+            elif k<g:
+                 U.append(S[k][g])
+                 L.append(0)
+            else:
+                 L.append(1)
+                 U.append(S[k][g])
+      L_.append(L)
+      U_.append(U)
+      L=[]
+      U=[]
+print("L is",L_)
+print("U is",U_)
 
-L,U=Library.LU_decomposition(matrix,L_,U_)
-print("L is",L)
-print("U is",U)
 
 #Output=
+#S is [[1, 2, 4], [3.0, 2.0, 2.0], [2.0, 1.0, 3.0]]
 #L is [[1, 0, 0], [3.0, 1, 0], [2.0, 1.0, 1]]
 #U is [[1.0, 2.0, 4.0], [0.0, 2.0, 2.0], [0.0, 0.0, 3.0]]
 

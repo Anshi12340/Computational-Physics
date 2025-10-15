@@ -1,7 +1,7 @@
 import numpy as np
 import math
 
-def read_matrix(filename) :
+def read_matrix(filename):
     with open(filename , "r" ) as f :
         matrix = [ ]
         for line in f :
@@ -36,17 +36,17 @@ def gauss(A,B):
         for l in range(len(A)):
             if l>k:
              if abs(A[l][k]) >abs(p):
-                p=A[l][k]
+                b=l
+                p=A[b][k]
         if p!=A[k][k]:
-            A[l],A[k]=A[k],A[l]
+            A[b],A[k]=A[k],A[b]
             
             
         #normalising the pivot row  
         if abs(A[k][k])<10**-6:
            print("determinant is zero")    
            break
-        fact=fact*A[k][k]
-        for t in range(len(A)):
+        for t in range(len(A[0])):
         
            L.append(A[k][t]/A[k][k])  
         A[k]=L
@@ -56,12 +56,12 @@ def gauss(A,B):
            if k!=h:
              if A[h][k]!=0:
                
-               for g in range(len(A)):
+               for g in range(len(A[0])):
                  L.append(A[h][g]- ( A[k][g]*A[h][k] ))
-               A[h]=L
+               A[h]=L    
     Lw_=[]
     Lw=[]
-    for d in range(len(A),len(A[0])):
+    for d in range(len(A[0])-len(B),len(A[0])):
        for k in range(len(A)):
         Lw_.append(A[k][d])
        Lw.append(Lw_)
@@ -117,9 +117,10 @@ def det(A):
         for l in range(len(A)):
             if l>k:
              if abs(A[l][k]) >abs(p):
-                p=A[l][k]
+                b=l
+                p=A[b][k]
         if p!=A[k][k]:
-            A[l],A[k]=A[k],A[l]
+            A[b],A[k]=A[k],A[b]
             fact=fact*(-1)
             
         #normalising the pivot row  
@@ -144,7 +145,8 @@ def det(A):
                     
 #inverse of matrix using Gauss Jordon
 def inverse(A):
-  if det(A)==0:
+  B=A.copy()
+  if det(B)==0:
     print("inverse does not exist")
   else:
      L=[]
@@ -156,7 +158,7 @@ def inverse(A):
         else:
             L_.append(0)
       L.append(L_)
-      L_=[]
+      L_=[] 
      Lsol=gauss(A,L) 
  
      Lk=[]
@@ -170,30 +172,30 @@ def inverse(A):
 
 
 #final matrix is L_ and U_
-def LU_decomposition(matrixa,L_,U_):
+def LU_decomposition(matrixa):
   for i in range(len(matrixa)):
       for j in range(len(matrixa)):
            if i>j:
                 t=0
                 l=0
                 for k in range(0,j):
-                  c=L_[i][k]*U_[k][j] +t
+                  c=matrixa[i][k]*matrixa[k][j] +t
                   t=c
-                L_[i][j]=(matrixa[i][j]-t)  / U_[j][j]
+                matrixa[i][j]=(matrixa[i][j]-t)  / matrixa[j][j]
                 
-                for w in range(0,i):
-                  g=L_[i][w]*U_[w][j]+l
+                """for w in range(0,i):
+                  g=matrixa[i][w]*matrixa[w][j]+l
                   l=g
-                U_[i][j]=matrixa[i][j]-l
+                matrixa[i][j]=matrixa[i][j]-l"""
                 
 
            if i<=j:
                 y=0
                 for s in range(0,i):     
-                  e=L_[i][s]*U_[s][j]+y
+                  e=matrixa[i][s]*matrixa[s][j]+y
                   y=e
-                U_[i][j]=matrixa[i][j]-y
-  return L_,U_    
+                matrixa[i][j]=matrixa[i][j]-y
+  return matrixa   
 
 #LU decomposition using forward and backward substitution
           
@@ -256,6 +258,7 @@ def ch(matrix):
                  c=t
              L_[i][j]=(matrix[i][j] - c )/ L_[i][i]   
              L_[j][i] = L_[i][j]
+ 
  Lt_=[]
  for k in range(len(matrix)):
      Lt=[]
@@ -263,10 +266,11 @@ def ch(matrix):
          Lt.append(0)
      Lt_.append(Lt)
 
-
+ 
  for c in range(len(Lt_)):
     for z in range(len(Lt_)):
         Lt_[z][c]=L_[c][z]
+ 
  return L_,Lt_          
 
 def Jac(A,B):
@@ -361,13 +365,13 @@ def Falsi(a,b,f):
    count=0
    while True:
     c=b-(((b-a)*f(b))/(f(b)-f(a)))
-    if np.abs(b-a)<10**-6 and np.abs(f(c))<10**-6:
+    if np.abs(b-a)<10**-6 or np.abs(f(c))<10**-6:
       return c,count
     else:
      if f(a)*f(c)<0:
           b=c
           count=count+1  
-     if f(b)*f(c)<0:
+     elif f(b)*f(c)<0:
            a=c
            count=count+1
   else:

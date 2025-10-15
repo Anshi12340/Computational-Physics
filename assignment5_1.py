@@ -22,6 +22,7 @@ if c==len(A)**2:
     print("Symmetric")  
 
 L_,Lt_=Library.ch(A)
+
 X=Library.LU(A,B,Lt_,L_)
 print("Solutions are",X)
 #Solutions are [[1.0], [0.9999999999999999], [1.0], [1.0], [1.0], [1.0]]
@@ -30,6 +31,7 @@ print("Solutions are",X)
 #Question 2
 A=Library.read_matrix("Seidel2.txt")
 B=Library.read_matrix("Seidel2_.txt")
+
 A_=[]
 B_=[]
 for k in range(len(A)):
