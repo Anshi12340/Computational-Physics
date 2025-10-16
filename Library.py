@@ -3,10 +3,10 @@ import math
 
 def read_matrix(filename):
     with open(filename , "r" ) as f :
-        matrix = [ ]
+        matrix = []
         for line in f :
             # S p l i t t h e l i n e i n t o numbers and c o n v e r t t o i n t / f l o a t
-            row = [float(num) for num in line.strip( ).split( )]
+            row = [float(num) for num in line.strip().split()]
             matrix.append ( row )
     return matrix
 
@@ -397,11 +397,11 @@ def Bisection(a,b,f):
   else:
      print("bracketing not done")          
   
-def Raphson(f,f_,x_): #f and f_ are function and derivative of function and x_ is initial guess
+def Raphson(f,f_,x_,epsilon): #f and f_ are function and derivative of function and x_ is initial guess
   c=0
   while True:
     x=x_ - f(x_)/f_(x_)
-    if np.abs(x-x_)<10**-6 and f(x)<10**-6:
+    if np.abs(x-x_)<epsilon and f(x)<epsilon:
        return x,f(x),c  
     else:
         x_=x
@@ -532,11 +532,12 @@ def Trapezoid(a,b,N,h,f):
   return sum *(h/2)  
 
 def Simpson(a,b,N,h,f):
+  
     sum=0
     x=a
-    for k in range(0,N):
-        if x<=b:
-            if k==0 or k==N-1:
+    for k in range(0,N+1):
+        
+            if k==0 or k==N:
                 sum=sum+f(x)
                 x=x+h
             elif k %2==0:
@@ -564,3 +565,20 @@ def Monte(a,b,N,fnew):  #returns both function and value of standard deviation
     F=((b-a)/N) *sum1
     """sigma=np.sqrt((((sum2/N)- ((sum1/N)**2))) )"""
     return F
+
+def Gaussian(f,a,b,L,L1):
+   sum1=0
+   sum2=0
+   if a==-1 and b==1:
+     for k in range(len(L)):
+       sum1=sum1+(f(L[k])*L1[k])
+     q=0
+   else:
+      
+      for k in range(len(L)):
+         sum2=sum2+(L1[k]*f((((b-a)/2)*L[k]) +((b+a)/2)) )
+      q=1
+   if q==0:
+      return sum1
+   elif q==1:
+      return sum2*((b-a)/2)
