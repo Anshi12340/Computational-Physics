@@ -440,7 +440,7 @@ def Multi_Fixed(values,x,y,z):#values is name of a function and requires 4 input
   c=c+1
  return xi,yi,zi,c
 
-def Laguerre(L,x): #entries ofL must be in decreasing powers of x
+def Laguerre(L,x): #entries of L must be in decreasing powers of x
  epsilon=10**-6
  def co(L,x):
     sum=0
@@ -582,3 +582,21 @@ def Gaussian(f,a,b,L,L1):
       return sum1
    elif q==1:
       return sum2*((b-a)/2)
+   
+
+def Range_Kutta(h,d,x,y,derivative):
+
+    yi=y
+    xi=x
+    k1=h*derivative(x,y)
+    
+    y,x=yi+k1/2,xi+(h/2)
+    
+    k2=h*derivative(x,y)
+    y,x=yi+k2/2,xi+(h/2)
+    k3=h*derivative(x,y)
+
+    y,x=yi+k3,xi+h
+    k4=h*derivative(x,y)
+    y=yi+ ((k1+2*k2 + 2*k3 +k4)/6)
+    return y,x
