@@ -584,7 +584,7 @@ def Gaussian(f,a,b,L,L1):
       return sum2*((b-a)/2)
    
 
-def Range_Kutta(h,d,x,y,derivative):
+def Range_Kutta(h,x,y,derivative):
 
     yi=y
     xi=x
@@ -600,3 +600,30 @@ def Range_Kutta(h,d,x,y,derivative):
     k4=h*derivative(x,y)
     y=yi+ ((k1+2*k2 + 2*k3 +k4)/6)
     return y,x
+def newRange_kutta(h,x,v,f,f_,t,L,bound,T,V): 
+ while t<=bound:
+   k1x=h*f(v)
+   k1v=h*f_(x,v)
+   k2x=h*f(v+k1v/2)
+   k2v=h*f_(x+k1x/2,v+k1v/2)
+   k3x=h*f(v+k2v/2)
+   k3v=h*f_(x+k2x/2,v+k2v/2)
+   k4x=h*f(v+k3v)
+   k4v=h*f_(x+k3x,v+k3v)
+   x=x+((k1x +2*k2x +2*k3x +k4x)/6)
+   v=v+((k1v+2*k2v+2*k3v +k4v)/6)
+   t=t+h
+   L.append(x)
+   T.append(t)
+   V.append(v)
+ return L ,V,T
+
+def Langrange(N,x,X,Y) : 
+ s=0  
+ for i in range(N):
+    m=1
+    for k in range(N):
+        if k!=i:
+            m=m*((x-X[k])/(X[i]-X[k]))
+    s=(m*Y[i])+s
+ return s
