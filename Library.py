@@ -618,6 +618,53 @@ def newRange_kutta(h,x,v,f,f_,t,L,bound,T,V):
    V.append(v)
  return L ,V,T
 
+#shooting method
+def Shooting_method(V,alpha): 
+  A=[]
+  for k in range(len(V)):
+   A_=[]
+   for l in range(len(V)):
+      
+      if k!=0 and k !=len(V)-1:
+        if l==k:
+         A_.append(1-(2*alpha))
+        if l==k+1:
+          A_.append(alpha)
+        if l==k-1:
+          A_.append(alpha)
+        if l!=k and l!=k+1 and l!=k-1:
+          A_.append(0)   
+      if k==0:
+        if l==k:
+          A_.append(1-(2*alpha))
+        if l==k+1:
+          A_.append(alpha)
+        if l!=k and l!=k+1:
+          A_.append(0)
+      if k==len(V)-1:
+        if l==k:
+          A_.append(1-2*(alpha))
+        if l==k-1:
+          A_.append(alpha)
+        if l!=k and l!=k-1:
+          A_.append(0)
+   A.append(A_)
+  return A
+
+def shootingplot(N,V,A): #N is number of time steps
+  for p in range(N):
+ 
+   M=[]
+
+
+   for k in range(len(V)):
+    sum=0
+    for l in range(len(V)):
+      sum=sum+A[k][l]*V[l]
+    M.append(sum)
+   V=M
+  return V
+
 def Langrange(N,x,X,Y) : 
  s=0  
  for i in range(N):
@@ -627,3 +674,25 @@ def Langrange(N,x,X,Y) :
             m=m*((x-X[k])/(X[i]-X[k]))
     s=(m*Y[i])+s
  return s
+
+
+def model(X,Y,sigma):
+ 
+ sum=0
+ sumxy=0
+ sumx2=0
+ sumy2=0
+ sumx=0
+ sumy=0
+ for k in range(len(X)):
+    sumxy=sumxy+ (((X[k]*Y[k])/(sigma[k])**2))
+    sumx2=sumx2+ (((X[k])**2)/((sigma[k])**2))
+    sumy2=sumy2+(((Y[k])**2)/((sigma[k])**2))
+    sum=sum+(1/((sigma[k])**2))
+    sumx=sumx+(X[k]/((sigma[k])**2))
+    sumy=sumy + (Y[k]/((sigma[k])**2))
+ delta=(sum*sumx2) - ((sumx)**2)
+ a1=((sumx2*sumy)-(sumx*sumxy))/delta
+ a2=((sumxy*sum)-(sumx*sumy))/delta
+ r2=(sumxy**2)/(sumx2*sumy2)
+ return a1,a2,r2
